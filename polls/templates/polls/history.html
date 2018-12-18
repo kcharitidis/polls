@@ -1,0 +1,39 @@
+<body>
+<head>
+    <style>
+    table{
+        width:60%;
+        border-style:double;
+        text-align:center;
+        font-size:30px;
+        color:white;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+        table tr:hover{
+            background:#ed1c24;
+        }
+
+    </style>
+</head>
+<p>Vote History</p>
+<div id="sessiondata">
+</div>
+
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+    var tb = "<table border='1'>";
+    tb+="<tr><th>Question</th><th>Choice</th><th>Votes</th></tr>";
+    var quests = JSON.parse( sessionStorage.getItem('quests'));
+
+    for (i=0; i<Object.keys(quests).length; i++){
+        tb += "<tr><td>" +quests[i].question + "</td><td>" +quests[i].choice + "</td><td>"+quests[i].votes +"</td></tr>";
+    }
+    tb+="</table>";
+    $("#sessiondata").html(tb);
+
+</script>
+{% endblock %}
+</body>

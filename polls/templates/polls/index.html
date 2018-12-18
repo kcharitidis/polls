@@ -1,0 +1,32 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static_cache %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}"/>
+</head>
+<html>
+<body>
+
+<div class="bg-img">
+    <div style="width:100px;float:right;">
+        <a href="/polls/" class="btn2" style="float:right;" id="logout_btn">Logout</a>
+    </div>
+    {% if latest_question_list %}
+    <ul>
+        {% for question in latest_question_list %}
+        <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No polls are available.</p>
+    {% endif %}
+</div>
+{% block javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+     $('#logout_btn').click(function(e){
+            sessionStorage.clear();
+     });
+        </script>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,115 @@
+body, html {
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.bg-img {
+
+    background: url("https://thumbs.gfycat.com/WateryWavyElk-small.gif");
+
+    min-height: 380px;
+    height:100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
+/* Add styles to the form container */
+.container {
+    position: absolute;
+    right: 0;
+    margin: 20px;
+    max-width: 300px;
+    padding: 16px;
+    background-color: white;
+}
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+/* Set a style for the submit button */
+.btn {
+    background-color: #ed1c24;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+.btn:hover {
+    opacity: 1;
+}
+.btn2 {
+    background-color: #ed1c24;
+    color: white;
+    padding: 16px 20px;
+    margin-left:100px;
+    margin-top:20px;
+    border: none;
+    cursor: pointer;
+    width: 170px;
+    opacity: 0.9;
+    text-decoration:none;
+    font-size:20px;
+}
+
+.btn2:hover {
+    opacity: 1;
+}
+ul{
+    list-style-type: none;
+    font-size:50px;
+    color:white;
+}
+li{
+    font-family: Arial, Helvetica, sans-serif;
+    padding-top:20px;
+}
+a{
+    color: white;
+}
+a:visited {
+    color: white;
+}
+
+#question_title{
+    color:white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:50px;
+    padding-top:50px;
+    padding-left:50px;
+}
+
+#post_form{
+    color:white;
+}
+#post_form label{
+    font-size:35px;
+    margin-left:50px;
+}
+#post_form input[type="radio"]{
+    height:30px;
+    width:30px;
+    margin-left:50px;
+    margin-top:20px;
+}

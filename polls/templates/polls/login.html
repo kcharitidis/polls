@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static_cache %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}"/>
+</head>
+<body>
+
+<div class="bg-img">
+    <form class="container" id="loginform" action="./login/" method="post">
+        {% csrf_token %}
+        <label id="error" hidden style="color:#ed1c24"><b>Wrong Credentials!</b></label>
+        <label id="registered" hidden style="color:#ed1c24"><b>Account Created!</b></label>
+        <label id="exists" hidden style="color:#ed1c24"><b>Account already exists!</b></label>
+        <h1>Login</h1>
+
+        <label for="username"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="username" id="username" required>
+
+        <label for="pwd"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="password" id="pwd" required>
+
+        <button type="submit" class="btn" id="loginbutton" name="login">Login</button>
+
+        <button type="submit" class="btn" id="registerbutton" name="register" style="margin-top:10px;">Register</button>
+
+    </form>
+</div>
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+            var button_pressed;
+            $('#loginform button[type=submit]').on('click', function() {
+                button_pressed = $(this).attr('name');
+            });
+
+
+            $('#loginform').on('submit',function(e){
+                console.log(button_pressed);
+                var uname = document.getElementById('username').value;
+                var pwd = document.getElementById('pwd').value;
+
+                if ( button_pressed == "login" ) {
+                    e.preventDefault();
+
+                     $.ajax({
+                        type:'POST',
+                        url: '/polls/login/',
+                        data:{
+                            username : uname,
+                            password : pwd,
+                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                        },
+                        success:function(data){
+                            if (data == "ok"){
+                                window.location.href = "./index/";
+                            }
+                            else{
+                                 $("#registered").hide();
+                                 $("#exists").hide();
+                                 $("#error").show();
+                            }
+                        }
+                    });
+                 }
+                 else{
+                     e.preventDefault();
+                     $("#error").hide();
+                     $("#registered").show();
+                     $('#loginform').attr('action', './register');
+                     $.ajax({
+                        type:'POST',
+                        url: '/polls/register/',
+                        data:{
+                            username : uname,
+                            password : pwd,
+                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                        },
+                        success:function(data){
+                            if ( data == "registered" ) {
+                                 $("#exists").hide();
+                                 $("#error").hide();
+                                 $("#registered").show();
+                            }
+                            else {
+                                 $("#registered").hide();
+                                 $("#error").hide();
+                                 $("#exists").show();
+                            }
+                        }
+                    });
+                 }
+            });
+
+
+
+</script>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,119 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}"/>
+</head>
+<html>
+<head>
+</head>
+<body>
+<div class="bg-img">
+    <div style="width:100px;float:right;">
+        <a href="/polls/" class="btn2" style="float:right;" id="logout_btn">Logout</a>
+        <a href="/polls/index/" class="btn2" style="float:right;">Back</a>
+        <a href="/polls/history/" id="history_button" class="btn2" style="float:right;">History</a>
+        <a href="/polls/serverhistory/" id="shistory_button" class="btn2" style="float:right;">History(Server)</a>
+    </div>
+
+    <h1 id="question_title">{{ question.question_text }}</h1>
+
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <div style="color:#ed1c24;font-size:25px;padding-left:50px;padding-bottom:20px;font-family: Arial, Helvetica, sans-serif;"
+         id="results_loader">
+
+
+    </div>
+    <form action="{% url 'polls:vote' question.id %}" method="post" id="post_form">
+        {% csrf_token %}
+        {% for choice in question.choice_set.all %}
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}"/>
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br/>
+        {% endfor %}
+        <input type="submit" value="Vote" id="input_button" class="btn2"/>
+    </form>
+    {% block javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+             $('#logout_btn').click(function(e){
+                    sessionStorage.clear();
+             });
+
+            $('#post_form').on('submit',function(e){
+                e.preventDefault();
+                var x = $('input[name=choice]:checked', '#post_form').val();
+
+                {% for choice in question.choice_set.all %}
+                    if ({{ choice.id }} == x){
+                        var cho = "{{ choice.choice_text }}";
+                    }
+                {% endfor %}
+
+                 $.ajax({
+                    type:'POST',
+                    url: '{% url 'polls:vote' question.id %}',
+                    data:{
+                        choice : x,
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                    },
+                    success:function(data){
+                        if (typeof(x) != "undefined"){
+                            $("#post_form").hide();
+                        }
+                        $("#results_loader").html(data);
+
+                            var i;
+                            var str;
+                            var y = parseInt(x);
+                            var quests = JSON.parse( sessionStorage.getItem('quests'));
+                            if (quests == undefined){
+                                var quests = {};
+                                quests[0] = {question : "{{ question.question_text }}", choice : cho, votes : 0};
+                                str = JSON.stringify(quests);
+                                sessionStorage.setItem('quests', str);
+                            }
+
+                            var bl = false;
+                            for (i=0; i<Object.keys(quests).length; i++){
+                                if (isNaN(y)) {
+                                    break;
+                                }
+                                else{
+                                    if ( cho == quests[i].choice){
+                                        quests[i].votes++;
+                                        bl = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ( bl == false && !(isNaN(y))){
+                                quests[Object.keys(quests).length] = {question : "{{ question.question_text }}", choice : cho, votes : 1};
+                            }
+                            str =  JSON.stringify(quests);
+                            sessionStorage.setItem('quests', str);
+
+                    }
+                });
+            });
+
+            $('#history_button').on('click',function(e){
+                e.preventDefault();
+                $.ajax({
+                    url: '{% url 'polls:history' %}',
+                    success:function(data){
+                        $("#post_form").hide();
+                        $("#question_title").hide();
+                        $("#results_loader").html(data);
+                        document.getElementById("results_loader").style.color = "white";
+                        document.getElementById("results_loader").style.paddingTop = "50px";
+                    }
+                });
+            });
+
+
+    </script>
+    {% endblock %}
+</div>
+</body>
+</html>
